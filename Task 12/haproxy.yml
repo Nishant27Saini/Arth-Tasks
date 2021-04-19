@@ -1,0 +1,23 @@
+- hosts: web
+  tasks:
+  - name: "Installing webserver"
+    package:
+        name: "httpd"
+  - copy:
+      dest: "/var/www/html/index.html"
+      content: "welcome to my webserver"
+  - service:
+      name: "httpd"
+      state: restarted
+
+
+- hosts: hap
+  tasks:
+  - name: "Installing haproxy / loadBalancer for webserver "
+    package:
+        name: "haproxy"
+  - template:
+      dest: "/etc/haproxy/haproxy.cfg"
+      src: "haproxy.j2"
+  - service:
+      name: "haproxy"
