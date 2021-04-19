@@ -1,0 +1,9 @@
+[web]
+192.168.29.209  ansible_user=root  ansible_ssh_pass=xxxx ansible_connection=ssh
+192.168.29.124  ansible_user=root  ansible_ssh_pass=xxxx ansible_connection=ssh
+
+[hap]
+192.168.29.26  ansible_user=root   ansible_ssh_pass=xxxx ansible_connection=ssh
+
+[main]
+192.168.29.124  ansible_user=root  ansible_ssh_pass=xxxx   ansible_connection=ssh
