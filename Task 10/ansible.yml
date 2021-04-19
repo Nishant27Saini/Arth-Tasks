@@ -1,0 +1,50 @@
+- hosts: main
+  tasks:
+  - file:
+     state: directory
+     path: "/dvd1"
+  - mount:
+     src: "/dev/cdrom"
+     path: "/dvd1"
+     state: mounted
+     fstype: "iso9660"
+  - yum_repository:
+     baseurl: "/dvd1/AppStream"
+     name: "mydvd1"
+     description: "mydvd space"
+     gpgcheck: no
+  - yum_repository:
+     baseurl: "/dvd1/BaseOS"
+     name: "mydvd2"
+     description: "mydvd2 space"
+     gpgcheck: no
+  - yum_repository:
+     baseurl: "https://download.docker.com/linux/centos/7/x86_64/stable/"
+     name: "mydvd3"
+     description: "mydvd space"
+     gpgcheck: no
+  - file:
+     state: directory
+     path: "/root/html"
+  - copy:
+     src: "index.html"
+     dest: "/root/html/index.html"
+  - pip:
+     name: "docker"
+  - command: "yum install docker-ce --nobest -y"
+  - service:
+     name: "docker"
+     state: "started"
+  - docker_image:
+     name: httpd
+     tag: latest
+     source: pull
+  - docker_container:
+     name: os2
+     image: httpd
+     volumes:
+       - /root/html:/usr/local/apache2/htdocs/
+     exposed_ports: "80"
+     ports:
+        - "1234:80"
+     state: started
