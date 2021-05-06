@@ -1,0 +1,76 @@
+- hosts: master
+  vars:
+     - h: "hadoop-1.2.1-1.x86_64.rpm"
+     - j: "jdk-8u171-linux-x64.rpm"
+     - node: "dfs.name.dir"
+     - folder: "/nn1"
+  vars_prompt:
+  - name: master_ip
+    prompt: "This playbook is going to configure Hadoop Distributed Storage Cluster , please enter the IPv4 address of system , which you want to configure as Hadoop namenode/master"
+    private: no
+
+  tasks:
+  - debug:
+      msg: "{{ master_ip }}"
+  - file:
+      state: directory
+      path: "/nn1"
+    ignore_errors: yes
+  - copy:
+      src: "{{ h }}"
+      dest: "/root"
+  - copy:
+      src: "{{ j }}"
+      dest: "/root"
+  - command: "rpm -i {{ j }} "
+    ignore_errors: yes
+  - command: "rpm -i {{ h }} --force"
+    ignore_errors: yes
+
+  - template:
+      src: "hdfs-site.xml"
+      dest: "/etc/hadoop/hdfs-site.xml"
+  - template:
+      src: "core-site.xml"
+      dest: "/etc/hadoop/core-site.xml"
+  - command: "hadoop namenode -format -force"
+  - command: "hadoop-daemon.sh start namenode"
+
+
+
+
+- hosts: slave
+  vars:
+     - h: "hadoop-1.2.1-1.x86_64.rpm"
+     - j: "jdk-8u171-linux-x64.rpm"
+     - node: "dfs.data.dir"
+     - folder: "/dn1"
+  vars_prompt:
+  - name: master_ip
+    prompt: "PLEASE ENTER IP OF NAMENODE AGAIN"
+    private: no
+
+  tasks:
+  - file:
+      state: directory
+      path: "/dn1"
+    ignore_errors: yes
+  - copy:
+      src: "{{ h }}"
+      dest: "/root"
+  - copy:
+      src: "{{ j }}"
+      dest: "/root"
+  - command: "rpm -i {{ j }} "
+    ignore_errors: yes
+  - command: "rpm -i {{ h }} --force"
+    ignore_errors: yes
+
+  - template:
+      src: "hdfs-site.xml"
+      dest: "/etc/hadoop/hdfs-site.xml"
+  - template:
+      src: "core-site.xml"
+      dest: "/etc/hadoop/core-site.xml"
+  - command: "hadoop-daemon.sh start datanode"
+
