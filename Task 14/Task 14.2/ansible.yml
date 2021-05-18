@@ -1,0 +1,60 @@
+- hosts: main
+  tasks:
+  - file:
+     state: directory
+     path: "/dvd1"
+  - mount:
+     src: "/dev/cdrom"
+     path: "/dvd1"
+     state: mounted
+     fstype: "iso9660"
+  - yum_repository:
+     baseurl: "/dvd1/AppStream"
+     name: "mydvd1"
+     description: "mydvd space"
+     gpgcheck: no
+  - yum_repository:
+     baseurl: "/dvd1/BaseOS"
+     name: "mydvd2"
+     description: "mydvd2 space"
+     gpgcheck: no
+  - yum_repository:
+     baseurl: "https://download.docker.com/linux/centos/7/x86_64/stable/"
+     name: "mydvd3"
+     description: "mydvd space"
+     gpgcheck: no
+
+  - pip:
+     name: "docker"
+  - command: "yum install docker-ce --nobest -y"
+  - service:
+     name: "docker"
+     state: "started"
+  - docker_image:
+     name: nishantsaini13/ssh
+     tag: v1
+     source: pull
+  - docker_container:
+     name: os2
+     image: nishantsaini13/ssh:v1
+
+     state: started
+  - debug:
+      msg: "{{ ansible_facts['docker_container']['NetworkSettings']['IPAddress']                                                                                                              }}"
+  - copy:
+     content: "[docker] \n {{ ansible_facts['docker_container']['NetworkSettings                                                                                                             ']['IPAddress'] }}    ansible_user=root   ansible_ssh_pass=nishant123  ansible_c                                                                                                             onnection=ssh"
+     dest: "ip1.txt"
+  - fetch:
+     src: /root/ip1.txt
+     dest: /task10/ip2.txt
+     flat: yes
+    register: c
+  - debug:
+     var: c
+- hosts: localhost
+  tasks:
+  - lineinfile:
+     path: /task10/ip3.txt
+     line: "{{ lookup('file','/task10/ip2.txt') }}"
+     state: present
+
