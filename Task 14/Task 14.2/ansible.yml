@@ -42,7 +42,7 @@
   - debug:
       msg: "{{ ansible_facts['docker_container']['NetworkSettings']['IPAddress']                                                                                                              }}"
   - copy:
-     content: "[docker] \n {{ ansible_facts['docker_container']['NetworkSettings                                                                                                             ']['IPAddress'] }}    ansible_user=root   ansible_ssh_pass=nishant123  ansible_c                                                                                                             onnection=ssh"
+     content: "[docker] \n {{ ansible_facts['docker_container']['NetworkSettings']['IPAddress'] }}  ansible_user=root  ansible_ssh_pass=nishant123 ansible_connection=ssh"                                                                                                            ']['IPAddress'] }}    ansible_user=root   ansible_ssh_pass=nishant123  ansible_c                                                                                                             onnection=ssh"
      dest: "ip1.txt"
   - fetch:
      src: /root/ip1.txt
