@@ -1,0 +1,13 @@
+- hosts: cloud
+  vars_files:
+    - "{{ ansible_facts.distribution }}"
+  tasks:
+  - package:
+      name: "{{ package }}"
+      state: present
+  - template:
+      src: /task14.3/{{ file }}
+      dest: /var/www/html/index.html
+  - service:
+      name: "{{ service }}"
+      state: started
